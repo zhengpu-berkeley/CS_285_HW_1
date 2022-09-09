@@ -1,4 +1,5 @@
 import abc
+from asyncio.windows_events import NULL
 import itertools
 from typing import Any
 from torch import nn
@@ -81,7 +82,18 @@ class MLPPolicy(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
             observation = obs[None]
 
         # TODO return the action that the policy prescribes
-        raise NotImplementedError
+
+        pt_obs = ptu.from_numpy(obs)
+
+        action = None
+        if self.discrete:
+            action = self.logits_na(pt_obs)
+        else:
+            action = self.mean_net(pt_obs)
+        
+        np_act = ptu.to_numpy(action)
+        return np_act
+        # raise NotImplementedError
 
     # update/train this policy
     def update(self, observations, actions, **kwargs):
@@ -93,7 +105,13 @@ class MLPPolicy(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
     # return more flexible objects, such as a
     # `torch.distributions.Distribution` object. It's up to you!
     def forward(self, observation: torch.FloatTensor) -> Any:
-        raise NotImplementedError
+        action = None
+        if self.discrete:
+            action = self.logits_na(observation)
+        else:
+            action = self.mean_net(observation)
+        return action
+        
 
 
 #####################################################
@@ -109,7 +127,14 @@ class MLPPolicySL(MLPPolicy):
             adv_n=None, acs_labels_na=None, qvals=None
     ):
         # TODO: update the policy and return the loss
-        loss = TODO
+        loss_func = self.loss
+        pt_our_act = ptu.from_numpy(self.get_action(observations)) 
+        loss = loss_func.forward(pt_our_act, ptu.from_numpy(actions))
+        
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+        
         return {
             # You can add extra logging information here, but keep this line
             'Training Loss': ptu.to_numpy(loss),
