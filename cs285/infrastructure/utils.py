@@ -11,7 +11,7 @@ MJ_ENV_KWARGS["Ant-v4"]["use_contact_forces"] = True
 def sample_trajectory(env, policy, max_path_length, render=False):
 
     # initialize env for the beginning of a new rollout
-    ob = TODO # HINT: should be the output of resetting the env
+    ob = env.reset() # HINT: should be the output of resetting the env
 
     # init vars
     obs, acs, rewards, next_obs, terminals, image_obs = [], [], [], [], [], []
@@ -27,7 +27,7 @@ def sample_trajectory(env, policy, max_path_length, render=False):
 
         # use the most recent ob to decide what to do
         obs.append(ob)
-        ac = TODO # HINT: query the policy's get_action function
+        ac = policy.get_action(ob) # HINT: query the policy's get_action function
         ac = ac[0]
         acs.append(ac)
 
@@ -41,7 +41,11 @@ def sample_trajectory(env, policy, max_path_length, render=False):
 
         # TODO end the rollout if the rollout ended
         # HINT: rollout can end due to done, or due to max_path_length
-        rollout_done = TODO # HINT: this is either 0 or 1
+        if done or (steps > max_path_length):
+            rollout_done = 1 # HINT: this is either 0 or 1
+        else:
+            rollout_done = 0
+
         terminals.append(rollout_done)
 
         if rollout_done:
@@ -61,7 +65,16 @@ def sample_trajectories(env, policy, min_timesteps_per_batch, max_path_length, r
     paths = []
     while timesteps_this_batch < min_timesteps_per_batch:
 
-        TODO
+        # curr_path_dict = {"observation" : np.array(obs, dtype=np.float32),
+                        # "image_obs" : np.array(image_obs, dtype=np.uint8),
+                        # "reward" : np.array(rewards, dtype=np.float32),
+                        # "action" : np.array(acs, dtype=np.float32),
+                        # "next_observation": np.array(next_obs, dtype=np.float32),
+                        # "terminal": np.array(terminals, dtype=np.float32)}
+        curr_path_dict = sample_trajectory(env, policy, max_path_length, render=False)
+        timesteps_this_batch = get_pathlength(curr_path_dict)
+        paths.append(curr_path_dict)
+
 
     return paths, timesteps_this_batch
 
@@ -74,7 +87,9 @@ def sample_n_trajectories(env, policy, ntraj, max_path_length, render=False):
     """
     paths = []
 
-    TODO
+    for _ in range(ntraj):
+        curr_path_dict = sample_trajectories(env, policy, 0, max_path_length, render=False)
+        paths.append(curr_path_dict)
 
     return paths
 
