@@ -62,7 +62,7 @@ def sample_trajectories(env, policy, min_timesteps_per_batch, max_path_length, r
         Hint2: use get_pathlength to count the timesteps collected in each path
     """
     timesteps_this_batch = 0
-    paths = []
+    paths = [] # list to be filled with dictionaries
     while timesteps_this_batch < min_timesteps_per_batch:
 
         # curr_path_dict = {"observation" : np.array(obs, dtype=np.float32),
@@ -85,13 +85,13 @@ def sample_n_trajectories(env, policy, ntraj, max_path_length, render=False):
         DONE implement this function
         Hint1: use sample_trajectory to get each path (i.e. rollout) that goes into paths
     """
-    paths = []
+    n_paths = [] # list to be filled with dictionaries
 
     for _ in range(ntraj):
-        curr_path_dict = sample_trajectories(env, policy, 0, max_path_length, render=False)
-        paths.append(curr_path_dict)
+        curr_path_dict = sample_trajectory(env, policy, 0, max_path_length, render=False)
+        n_paths.append(curr_path_dict)
 
-    return paths
+    return n_paths
 
 ############################################
 ############################################
