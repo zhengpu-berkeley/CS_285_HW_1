@@ -33,6 +33,7 @@ class ReplayBuffer(object):
         # our arrays
         observations, actions, rewards, next_observations, terminals = (
             convert_listofrollouts(paths, concat_rew))
+            # this function is from utils.py
 
         if self.obs is None:
             self.obs = observations[-self.max_size:]
@@ -72,12 +73,28 @@ class ReplayBuffer(object):
                 == self.terminals.shape[0]
         )
 
-        ## TODO return batch_size number of random entries from each of the 5 component arrays above
+        ## DONE return batch_size number of random entries from each of the 5 component arrays above
         ## HINT 1: use np.random.permutation to sample random indices
         ## HINT 2: return corresponding data points from each array (i.e., not different indices from each array)
         ## HINT 3: look at the sample_recent_data function below
 
-        return TODO, TODO, TODO, TODO, TODO
+        perm_random_index = np.random.permutation(self.obs.shape[0])
+        batch_size_indexes_arr = perm_random_index[0:batch_size]
+
+        # slice obs with the batch_size_indexes_arr:
+        random_obs_slices = self.obs[batch_size_indexes_arr]
+        random_acs_slices = self.acs[batch_size_indexes_arr]
+        random_rews_slices = self.rews[batch_size_indexes_arr]
+        random_next_obs_slices = self.next_obs[batch_size_indexes_arr]
+        random_terminals_slices = self.terminals[batch_size_indexes_arr]
+
+        return (
+            random_obs_slices,
+            random_acs_slices,
+            random_rews_slices,
+            random_next_obs_slices,
+            random_terminals_slices
+        )
 
     def sample_recent_data(self, batch_size=1):
         return (

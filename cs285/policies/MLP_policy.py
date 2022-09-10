@@ -81,7 +81,7 @@ class MLPPolicy(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
         else:
             observation = obs[None]
 
-        # TODO return the action that the policy prescribes
+        # DONE return the action that the policy prescribes
 
         pt_obs = ptu.from_numpy(obs)
 
@@ -126,7 +126,7 @@ class MLPPolicySL(MLPPolicy):
             self, observations, actions,
             adv_n=None, acs_labels_na=None, qvals=None
     ):
-        # TODO: update the policy and return the loss
+        # DONE: update the policy and return the loss
         loss_func = self.loss
         pt_our_act = ptu.from_numpy(self.get_action(observations)) 
         loss = loss_func.forward(pt_our_act, ptu.from_numpy(actions))
