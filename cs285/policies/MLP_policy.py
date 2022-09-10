@@ -1,5 +1,4 @@
 import abc
-from asyncio.windows_events import NULL
 import itertools
 from typing import Any
 from torch import nn
@@ -132,11 +131,12 @@ class MLPPolicySL(MLPPolicy):
         # note: i.e., been re written into expert action 
         # note: while other things are unchanged
         # note: hence we re-get the action from agent?
-        loss_func = self.loss
-        pt_our_act = ptu.from_numpy(self.get_action(observations)) 
-        loss = loss_func.forward(pt_our_act, ptu.from_numpy(actions))
-        
+
         self.optimizer.zero_grad()
+
+        pred_act = self.forward(ptu.from_numpy(observations))
+        loss = self.loss.forward(pred_act, ptu.from_numpy(actions))
+        
         loss.backward()
         self.optimizer.step()
         
