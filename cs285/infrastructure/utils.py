@@ -71,7 +71,7 @@ def sample_trajectories(env, policy, min_timesteps_per_batch, max_path_length, r
                         # "action" : np.array(acs, dtype=np.float32),
                         # "next_observation": np.array(next_obs, dtype=np.float32),
                         # "terminal": np.array(terminals, dtype=np.float32)}
-        curr_path_dict = sample_trajectory(env, policy, max_path_length, render=False)
+        curr_path_dict = sample_trajectory(env, policy, max_path_length, render)
         timesteps_this_batch = get_pathlength(curr_path_dict)
         paths.append(curr_path_dict)
 
@@ -88,7 +88,7 @@ def sample_n_trajectories(env, policy, ntraj, max_path_length, render=False):
     n_paths = [] # list to be filled with dictionaries
 
     for _ in range(ntraj):
-        curr_path_dict = sample_trajectory(env, policy, 0, max_path_length, render=False)
+        curr_path_dict = sample_trajectory(env, policy, max_path_length, render)
         n_paths.append(curr_path_dict)
 
     return n_paths
