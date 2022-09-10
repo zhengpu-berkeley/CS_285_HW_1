@@ -46,6 +46,7 @@ def sample_trajectory(env, policy, max_path_length, render=False):
         
         if done or (steps >= max_path_length):
             rollout_done = True # HINT: this is either 0 or 1
+            print('steps = {} ; max_path_length = {}'.format(steps, max_path_length))
             print('rollout is done')
         else:
             rollout_done = False
