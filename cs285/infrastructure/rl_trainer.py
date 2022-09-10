@@ -180,13 +180,14 @@ class RL_Trainer(object):
         n_paths = utils.sample_n_trajectories(
             self.env, 
             collect_policy, 
-            batch_size, 
+            int(batch_size/self.params['ep_len']), 
             self.params['ep_len'],
             False) # render option assumed false, later the video collect will do it
 
         envsteps_this_batch = 0
         for path in n_paths:
             envsteps_this_batch += path['observation'].shape[0]
+        print("envsteps_this_batch = {}".format(envsteps_this_batch))
         # collect more rollouts with the same policy, to be saved as videos in tensorboard
         # note: here, we collect MAX_NVIDEO rollouts, each of length MAX_VIDEO_LEN
         train_video_paths = None
