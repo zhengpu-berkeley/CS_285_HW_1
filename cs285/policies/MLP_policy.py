@@ -83,7 +83,7 @@ class MLPPolicy(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
 
         # DONE return the action that the policy prescribes
 
-        pt_obs = ptu.from_numpy(obs)
+        pt_obs = ptu.from_numpy(observation)
 
         action = None
         if self.discrete:
@@ -127,6 +127,11 @@ class MLPPolicySL(MLPPolicy):
             adv_n=None, acs_labels_na=None, qvals=None
     ):
         # DONE: update the policy and return the loss
+
+        # note: zzp thinks actions is expert action?
+        # note: i.e., been re written into expert action 
+        # note: while other things are unchanged
+        # note: hence we re-get the action from agent?
         loss_func = self.loss
         pt_our_act = ptu.from_numpy(self.get_action(observations)) 
         loss = loss_func.forward(pt_our_act, ptu.from_numpy(actions))
