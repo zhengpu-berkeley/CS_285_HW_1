@@ -41,9 +41,12 @@ def sample_trajectory(env, policy, max_path_length, render=False):
 
         # DONE end the rollout if the rollout ended
         # HINT: rollout can end due to done, or due to max_path_length
-        print(steps)
-        if done or (steps > max_path_length):
+        if (steps % 500) == 0:
+            print("steps = {}".format(steps))
+        
+        if done or (steps >= max_path_length):
             rollout_done = True # HINT: this is either 0 or 1
+            print('rollout is done')
         else:
             rollout_done = False
 
@@ -88,7 +91,8 @@ def sample_n_trajectories(env, policy, ntraj, max_path_length, render=False):
     """
     n_paths = [] # list to be filled with dictionaries
 
-    for _ in range(ntraj):
+    for i in range(ntraj):
+        print("sampling {}-th trajectory".format(i))
         curr_path_dict = sample_trajectory(env, policy, max_path_length, render)
         n_paths.append(curr_path_dict)
 
