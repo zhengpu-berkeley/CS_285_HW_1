@@ -185,7 +185,7 @@ class RL_Trainer(object):
 
         envsteps_this_batch = 0
         for path in paths:
-            envsteps_this_batch += path["observation"].shape[0]
+            envsteps_this_batch += path[0].shape[0]
         # collect more rollouts with the same policy, to be saved as videos in tensorboard
         # note: here, we collect MAX_NVIDEO rollouts, each of length MAX_VIDEO_LEN
         train_video_paths = None
