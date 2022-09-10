@@ -66,6 +66,9 @@ def sample_trajectories(env, policy, min_timesteps_per_batch, max_path_length, r
         Hint1: use sample_trajectory to get each path (i.e. rollout) that goes into paths
         Hint2: use get_pathlength to count the timesteps collected in each path
     """
+    # this is a single batch...
+    # while loop collects enough data for one batch 
+    # if data per rollout not enough.
     timesteps_this_batch = 0
     paths = [] # list to be filled with dictionaries
     while timesteps_this_batch < min_timesteps_per_batch:
@@ -77,7 +80,7 @@ def sample_trajectories(env, policy, min_timesteps_per_batch, max_path_length, r
                         # "next_observation": np.array(next_obs, dtype=np.float32),
                         # "terminal": np.array(terminals, dtype=np.float32)}
         curr_path_dict = sample_trajectory(env, policy, max_path_length, render)
-        timesteps_this_batch = get_pathlength(curr_path_dict)
+        timesteps_this_batch += get_pathlength(curr_path_dict)
         paths.append(curr_path_dict)
 
 
